@@ -52,16 +52,11 @@ public class smith_waterman{
     private void traceBack_global(int i,int j,String traceBack_direction){
         try{
             count++;
-            if(traceBack_direction.equals("reverse_diagonal")){
-                answer[0]+=A.charAt(i);
-                answer[1]+=B.charAt(j);
-            }else if(traceBack_direction.equals("leftward")){
-                answer[0]+='-';
-                answer[1]+=B.charAt(j);
-            }else if(traceBack_direction.equals("upward")){
-                answer[0]+=A.charAt(i);
-                answer[1]+='-';
-            }else{
+            answerConstructing(i,j,traceBack_direction);
+            if(traceBack_direction==null){
+                /**
+                 * global trace back initialization
+                 */
                 if(scoring_dataSheet[i-1][j]==scoring_dataSheet[i][j]+matching(i,j,"downward"))
                     traceBack_global(i,j,"upward");
                 if(scoring_dataSheet[i][j-1]==scoring_dataSheet[i][j]+matching(i,j,"rightward"))
@@ -70,12 +65,7 @@ public class smith_waterman{
                     traceBack_global(i,j,"reverse_diagonal");
             }
             if(i==1&&j==1){
-                System.out.println("the length of the matched seq:"+count);
-                System.out.println(answer[0]);
-                System.out.println(answer[1]);
-                answer[0]="";
-                answer[1]="";
-                count=0;
+                answerOutputing();
                 return;
             }else if((i>1||j>1)&&(i<scoring_dataSheet.length&&j<scoring_dataSheet[0].length)){
                 if(scoring_dataSheet[i-1][j]==scoring_dataSheet[i][j]+matching(i,j,"downward"))
@@ -108,6 +98,9 @@ public class smith_waterman{
                             maxPos_j=m;
                         }
                 temp=scoring_dataSheet[maxPos_i][maxPos_j];
+                /**
+                 * local trace back initialization
+                 */
                 if(scoring_dataSheet[maxPos_i-1][maxPos_j]==temp+matching(maxPos_i,maxPos_j,"downward"))
                     traceBack_local(maxPos_i,maxPos_j,"upward");
                 if(scoring_dataSheet[maxPos_i][maxPos_j-1]==temp+matching(maxPos_i,maxPos_j,"rightward"))
@@ -115,16 +108,7 @@ public class smith_waterman{
                 if(scoring_dataSheet[maxPos_i-1][maxPos_j-1]==temp+matching(maxPos_i,maxPos_j,"diagonal"))
                     traceBack_local(maxPos_i,maxPos_j,"reverse_diagonal");
             }else if(scoring_dataSheet[i][j]!=0){
-                if(traceBack_direction.equals("reverse_diagonal")){
-                    answer[0]+=A.charAt(i);
-                    answer[1]+=B.charAt(j);
-                }else if(traceBack_direction.equals("leftward")){
-                    answer[0]+='-';
-                    answer[1]+=B.charAt(j);
-                }else if(traceBack_direction.equals("upward")){
-                    answer[0]+=A.charAt(i);
-                    answer[1]+='-';
-                }
+                answerConstructing(i,j,traceBack_direction);
                 if((i>=1||j>=1)&&(i<scoring_dataSheet.length&&j<scoring_dataSheet[0].length)){
                     if(scoring_dataSheet[i-1][j]==scoring_dataSheet[i][j]+matching(i,j,"downward"))
                         traceBack_local(i-1,j,"upward");
@@ -134,12 +118,7 @@ public class smith_waterman{
                         traceBack_local(i-1,j-1,"reverse_diagonal");
                 }
             }else{
-                System.out.println("the length of the matched seq:"+count);
-                System.out.println(answer[0]);
-                System.out.println(answer[1]);
-                answer[0]="";
-                answer[1]="";
-                count=0;
+                answerOutputing();
                 return;
             }
         }catch(Exception e){
@@ -195,6 +174,26 @@ public class smith_waterman{
             default: {
                 throw new Exception("cannot analyze direction");
             }
+        }
+    }
+    private void answerOutputing()throws Exception{
+        System.out.println("the length of the matched seq:"+count);
+        System.out.println(answer[0]);
+        System.out.println(answer[1]);
+        answer[0]="";
+        answer[1]="";
+        count=0;
+    }
+    private void answerConstructing(int i,int j,String traceBack_direction)throws Exception{
+        if(traceBack_direction.equals("reverse_diagonal")){
+            answer[0]+=A.charAt(i);
+            answer[1]+=B.charAt(j);
+        }else if(traceBack_direction.equals("leftward")){
+            answer[0]+='-';
+            answer[1]+=B.charAt(j);
+        }else if(traceBack_direction.equals("upward")){
+            answer[0]+=A.charAt(i);
+            answer[1]+='-';
         }
     }
 
