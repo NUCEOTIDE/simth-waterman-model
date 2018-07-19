@@ -1,3 +1,6 @@
+import java.util.*;
+import java.lang.*;
+import java.io.*;
 
 public class smith_waterman{
     private String A,B;
@@ -19,7 +22,7 @@ public class smith_waterman{
         scoring_dataSheet_initial();
         scoring_calculation(isGlobal);
 
-        if(isGlobal)traceBack_global(scoring_dataSheet.length,scoring_dataSheet[0].length);
+        if(isGlobal)traceBack_global(scoring_dataSheet.length,scoring_dataSheet[0].length,null);
         else traceBack_local();
     }
 
@@ -46,38 +49,59 @@ public class smith_waterman{
             }
         }
     }
-    private boolean traceBack_global(int i,int j){
-        answer[0]+=A.charAt(i);
-        answer[1]+=B.charAt(j);
-        count++;
-        if(i==0&&j==0){
-            System.out.println("the length of the matched seq:"+count);
-            System.out.println(answer[0]);
-            System.out.println(answer[1]);
-            answer[0]="";
-            answer[1]="";
-            count=0;
-            return false;
-        }
-        else if(i==0||j==0) return false;
-        else{
-            try{
+    private boolean traceBack_global(int i,int j,String traceBack_direction){
+        try{
+            count++;
+            if(traceBack_direction.equals("reverse_diagonal")){
+                answer[0]+=A.charAt(i);
+                answer[1]+=B.charAt(j);
+            }else if(traceBack_direction.equals("leftward")){
+                answer[0]+='-';
+                answer[1]+=B.charAt(j);
+            }else if(traceBack_direction.equals("upward")){
+                answer[0]+=A.charAt(i);
+                answer[1]+='-';
+            }else{
                 if(scoring_dataSheet[i-1][j]==scoring_dataSheet[i][j]+matching(i,j,"downward"))
-                    traceBack_global(i-1,j);
+                    traceBack_global(i,j,"upward");
                 if(scoring_dataSheet[i][j-1]==scoring_dataSheet[i][j]+matching(i,j,"rightward"))
-                    traceBack_global(i,j-1);
+                    traceBack_global(i,j,"leftward");
                 if(scoring_dataSheet[i-1][j-1]==scoring_dataSheet[i][j]+matching(i,j,"diagonal"))
-                    traceBack_global(i-1,j-1);
-            }catch(Exception e){
-                if(e.getMessage().equals("cannot analyze direction"))
-                    System.out.println("cannot trace back because of unknown direction during tracing");
-            }finally{
-                return false;
+                    traceBack_global(i,j,"reverse_diagonal");
             }
+            if(i==0&&j==0){
+                System.out.println("the length of the matched seq:"+count);
+                System.out.println(answer[0]);
+                System.out.println(answer[1]);
+                answer[0]="";
+                answer[1]="";
+                count=0;
+                return false;
+            }else if(i==0||j==0){
+
+                return false;
+            }else{
+                if(scoring_dataSheet[i-1][j]==scoring_dataSheet[i][j]+matching(i,j,"downward"))
+                    traceBack_global(i-1,j,"upward");
+                if(scoring_dataSheet[i][j-1]==scoring_dataSheet[i][j]+matching(i,j,"rightward"))
+                    traceBack_global(i,j-1,"leftward");
+                if(scoring_dataSheet[i-1][j-1]==scoring_dataSheet[i][j]+matching(i,j,"diagonal"))
+                    traceBack_global(i-1,j-1,"reverse_diagonal");
+            }
+        }catch(Exception e){
+        if(e.getMessage().equals("cannot analyze direction"))
+            System.out.println("cannot trace back because of unknown direction during tracing");
+        if(i<0||j<0||i>=scoring_dataSheet.length||j>=scoring_dataSheet[0].length)
+            System.out.println("IndexOutOfBondException");
+        }finally{
+            return false;
         }
     }
     private void traceBack_local(){
-
+        answer[0]+=A.charAt(i);
+        answer[1]+=B.charAt(j);
+        count++;
+        if()
     }
     private float maximun(boolean isGlobal,int i,int j){
         float temp_socre=0;
