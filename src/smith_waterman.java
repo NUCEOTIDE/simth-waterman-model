@@ -2,23 +2,48 @@ import java.util.*;
 import java.lang.*;
 import java.io.*;
 
+
 public class smith_waterman{
     private String A,B;
-    private char[][] scoring_scheme;
+    private String[][] scoring_scheme;
     private float penalty;
     private float[][] scoring_dataSheet;
     private String[] answer;
     private int count=-1;
 
+    public smith_waterman(String types){
+        switch (types){
+            //case "default": new smith_waterman();
+            //case "Settings from files": new smith_waterman();
+            case "homework": new smith_waterman();
+        }
+    }
     public smith_waterman(){
-        A=null;
-        B=null;
-        scoring_scheme=null;
-        penalty=0;
-        scoring_dataSheet=null;
+        A="ACCGTTAACGTT";
+        B="AACGCGTTACAC";
+        System.out.println(A);
+        System.out.println(B);
+        String tempScore_string="ACTG";
+        scoring_scheme=new String[4+1][4+1];
+        for(int i=1;i<scoring_scheme.length;i++)
+            for(int j=1;j<scoring_scheme[0].length;j++){
+                scoring_scheme[i][0]=String.valueOf(tempScore_string.charAt(i-1));
+                scoring_scheme[0][j]=String.valueOf(tempScore_string.charAt(j-1));
+                if(i==j) scoring_scheme[i][j]="1";
+                else scoring_scheme[i][j]="-1";
+            }
+        for(int i=0;i<scoring_scheme.length;i++){
+            for(int j=0;j<scoring_scheme[0].length;j++)
+                System.out.print(scoring_scheme[i][j]);
+            System.out.println();
+        }
+
+        penalty=-2;
+        int aLen=A.length()+1,bLen=B.length()+1;
+        scoring_dataSheet=new float[aLen][bLen];
         answer=new String[2];
     }
-    private void scoring(boolean isGlobal){
+    public void scoring(boolean isGlobal){
         scoring_dataSheet_initial();
         scoring_calculation(isGlobal);
 
@@ -27,7 +52,6 @@ public class smith_waterman{
     }
 
     private boolean scoring_dataSheet_initial(){
-        scoring_dataSheet=new float[A.length()+1][B.length()+1];
         try{
             scoring_dataSheet[0][0]=0;
             for(int i=1;i<scoring_dataSheet[0].length;i++){
@@ -37,18 +61,25 @@ public class smith_waterman{
                 scoring_dataSheet[j][0]=0;
             }
 
-        }catch(Exception e){
+        }catch(NullPointerException e){
             return false;
         }
         return true;
     }
-    public void scoring_calculation(boolean isGlobal){
+    private void scoring_calculation(boolean isGlobal){
         for(int i=1;i<scoring_dataSheet.length;i++){
             for(int j=1;j<scoring_dataSheet[0].length;j++){
                 scoring_dataSheet[i][j]=maximun(isGlobal,i,j);
             }
         }
     }
+
+    /**
+     * trace back methods
+     * @param i
+     * @param j
+     * @param traceBack_direction
+     */
     private void traceBack_global(int i,int j,String traceBack_direction){
         try{
             count++;
@@ -131,6 +162,14 @@ public class smith_waterman{
             return;
         }
     }
+
+    /**
+     * finding maximun score path between nodes in matrix
+     * @param isGlobal
+     * @param i
+     * @param j
+     * @return
+     */
     private float maximun(boolean isGlobal,int i,int j){
         float temp_socre=0;
         try{
@@ -162,11 +201,11 @@ public class smith_waterman{
             case "diagonal":{
                 try{
                     char a=A.charAt(i-1),b=B.charAt(j-1);
-                    for(int k=0;k<scoring_scheme.length;k++) if(a==scoring_scheme[k][0]) a_pos=k;
-                    for(int m=0;m<scoring_scheme[0].length;m++) if(b==scoring_scheme[0][m]) b_pos=m;
+                    for(int k=0;k<scoring_scheme.length;k++) if(a==scoring_scheme[k][0].charAt(0)) a_pos=k;
+                    for(int m=0;m<scoring_scheme[0].length;m++) if(b==scoring_scheme[0][m].charAt(0)) b_pos=m;
                     if(a_pos==0||b_pos==0) throw new Exception("cannot find character");
                 }finally {
-                    return Integer.parseInt(String.valueOf(scoring_scheme[a_pos][b_pos]));
+                    return Integer.parseInt(scoring_scheme[a_pos][b_pos]);
                 }
             }
             case "rightward": return penalty;
@@ -176,6 +215,11 @@ public class smith_waterman{
             }
         }
     }
+
+    /**
+     * answer processing methods
+     * @throws Exception
+     */
     private void answerOutputing()throws Exception{
         System.out.println("the length of the matched seq:"+count);
         System.out.println(answer[0]);
@@ -213,7 +257,7 @@ public class smith_waterman{
     private float getPenalty(){
         return this.penalty;
     }
-    private char[][] getScoring_scheme(){
+    private String[][] getScoring_scheme(){
         return this.scoring_scheme;
     }
     private float[][] getScoring_dataSheet(){
@@ -230,7 +274,7 @@ public class smith_waterman{
     private void setB(String B){
         this.B=B;
     }
-    private void setScoring_scheme(char[][] scoring_scheme){
+    private void setScoring_scheme(String[][] scoring_scheme){
         this.scoring_scheme=scoring_scheme;
     }
     private void setPenalty(float penalty){
@@ -239,10 +283,5 @@ public class smith_waterman{
     private void setScoring_dataSheet(float[][] scoring_dataSheet){
         this.scoring_dataSheet=scoring_dataSheet;
     }
-    public smith_waterman(String types){
-        switch (types){
-            case "default": new smith_waterman();
-            case "Settings from files": new smith_waterman();
-        }
-    }
+
 }
