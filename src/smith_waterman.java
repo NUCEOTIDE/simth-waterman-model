@@ -18,11 +18,20 @@ public class smith_waterman{
             case "homework": new smith_waterman();
         }
     }
+
+    /**
+     * default object constructor
+     *
+     */
     public smith_waterman(){
+
+        /**input String A and B*/
         A="ACCGTTAACGTT";
         B="AACGCGTTACAC";
         System.out.println(A);
         System.out.println(B);
+
+        /**construct scoring scheme*/
         String tempScore_string="ACTG";
         scoring_scheme=new String[4+1][4+1];
         scoring_scheme[0][0]="0";
@@ -39,6 +48,7 @@ public class smith_waterman{
             System.out.println();
         }
 
+        /**construct penalty*/
         penalty=-2;
         int aLen=A.length()+1,bLen=B.length()+1;
         scoring_dataSheet=new float[aLen][bLen];
@@ -46,6 +56,12 @@ public class smith_waterman{
         answer[0]="";
         answer[1]="";
     }
+
+    /**
+     * main scoring method, do its job by call a number of sub-methods
+     * also out put results on terminal
+     * @param isGlobal
+     */
     public void scoring(boolean isGlobal){
         scoring_dataSheet_initial();
         scoring_calculation(isGlobal);
@@ -61,6 +77,11 @@ public class smith_waterman{
         System.out.println(answer[1]);
     }
 
+    /**
+     * initialize the scoring_dataSheet by giving all elements in sheet a value of zero
+     * the value of first line and first roll will be used for further matrix building
+     * @return
+     */
     private boolean scoring_dataSheet_initial(){
         try{
             scoring_dataSheet[0][0]=0;
@@ -85,7 +106,7 @@ public class smith_waterman{
     }
 
     /**
-     * trace back methods
+     * global trace back method
      * @param i
      * @param j
      * @param traceBack_direction
@@ -126,10 +147,24 @@ public class smith_waterman{
             return;
         }
     }
+
+    /**
+     * local trace back method
+     * 1. find the largest value in the matrix and record the position as starting position of trace back
+     * 2. start recursion and call itself until the value stored in current position reach zero
+     * 3. every time the method call itself, examine the conditional statement
+     *  (1) traceBack_direction's content = "start point" reveals that it's the first time the method is called
+     *  (2) when the recursion is in its progress, every time add strings in to the string "answer"
+     *  (3) when the recursion is ended (in one certain path), output the string, reinitialize variables and return to
+     *  outer layers
+     * @param i
+     * @param j
+     * @param traceBack_direction
+     */
     private void traceBack_local(int i,int j,String traceBack_direction){
         try{
-            count++;
-            if(traceBack_direction.equals("start point")){
+            count++;  /**counting every time to obtain the length of alignment*/
+            if(traceBack_direction.equals("start point")){  //initialize the recursion
                 float temp=0;
                 int maxPos_i=0,maxPos_j=0;
                 for(int k=1;k<scoring_dataSheet.length;k++)
@@ -140,17 +175,15 @@ public class smith_waterman{
                         }
                         System.out.println(maxPos_i+" "+maxPos_j);
                 temp=scoring_dataSheet[maxPos_i][maxPos_j];
-                /**
-                 * local trace back initialization
-                 */
+                /**local trace back initialization*/
                 if(scoring_dataSheet[maxPos_i-1][maxPos_j]==temp+matching(maxPos_i,maxPos_j,"downward"))
                     traceBack_local(maxPos_i,maxPos_j,"upward");
                 if(scoring_dataSheet[maxPos_i][maxPos_j-1]==temp+matching(maxPos_i,maxPos_j,"rightward"))
                     traceBack_local(maxPos_i,maxPos_j,"leftward");
                 if(scoring_dataSheet[maxPos_i-1][maxPos_j-1]==temp+matching(maxPos_i,maxPos_j,"diagonal"))
                     traceBack_local(maxPos_i,maxPos_j,"reverse_diagonal");
-            }else if(scoring_dataSheet[i][j]!=0){
-                answerConstructing(i,j,traceBack_direction);
+            }else if(scoring_dataSheet[i][j]!=0){  /**if the recursion is in progress*/
+                answerConstructing(i,j,traceBack_direction);  /**construct answer string*/
                 System.out.println("answer constructed"+i+" "+j);
                 if((i>=1||j>=1)&&(i<scoring_dataSheet.length&&j<scoring_dataSheet[0].length)){
                     if(scoring_dataSheet[i-1][j]==scoring_dataSheet[i][j]+matching(i,j,"downward"))
@@ -164,7 +197,7 @@ public class smith_waterman{
                 answerOutputing();
                 return;
             }
-        }catch(Exception e){
+        }catch(Exception e){  /**catching exceptions*/
             if(e.getMessage().equals("cannot analyze direction"))
                 System.out.println("cannot trace back because of unknown direction during tracing");
             if(i<=0||j<=0||i>=scoring_dataSheet.length||j>=scoring_dataSheet[0].length)
@@ -207,6 +240,15 @@ public class smith_waterman{
             return temp_score;
         }
     }
+
+    /**
+     * match the direction with coordinate score
+     * @param i
+     * @param j
+     * @param direction
+     * @return
+     * @throws Exception
+     */
     private float matching(int i,int j,String direction)throws Exception{
         int a_pos=0,b_pos=0;
         switch (direction){
@@ -229,7 +271,7 @@ public class smith_waterman{
     }
 
     /**
-     * answer processing methods
+     * answer output (to terminator) method
      * @throws Exception
      */
     private void answerOutputing()throws Exception{
@@ -240,6 +282,13 @@ public class smith_waterman{
         answer[1]="";
         count=0;
     }
+
+    /**
+     * answer processing method
+     * @param i
+     * @param j
+     * @param traceBack_direction
+     */
     private void answerConstructing(int i,int j,String traceBack_direction)/*throws Exception*/{
         if(traceBack_direction.equals("reverse_diagonal")){
             answer[0]+=String.valueOf(A.charAt(i));
@@ -279,7 +328,6 @@ public class smith_waterman{
     /**
      * set methods
      */
-
     private void setA(String A){
         this.A=A;
     }
