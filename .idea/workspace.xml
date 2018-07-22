@@ -18,8 +18,8 @@
       <file leaf-file-name="smith_waterman.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/smith_waterman.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="162">
-              <caret line="9" column="47" selection-start-line="9" selection-start-column="47" selection-end-line="9" selection-end-column="47" />
+            <state relative-caret-position="-378">
+              <caret line="9" column="49" lean-forward="true" selection-start-line="4" selection-start-column="4" selection-end-line="9" selection-end-column="49" />
               <folding>
                 <element signature="e#12301#12302#0" expanded="true" />
                 <element signature="e#12330#12331#0" expanded="true" />
@@ -246,7 +246,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <frame x="-7" y="-7" width="1550" height="838" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
@@ -285,25 +285,25 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/smith_waterman.java</url>
+          <url />
           <line>72</line>
           <properties />
           <option name="timeStamp" value="17" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/smith_waterman.java</url>
+          <url />
           <line>275</line>
           <properties />
           <option name="timeStamp" value="39" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/smith_waterman.java</url>
+          <url />
           <line>184</line>
           <properties />
           <option name="timeStamp" value="42" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-method">
-          <url>file://$PROJECT_DIR$/src/smith_waterman.java</url>
+          <url />
           <line>289</line>
           <properties class="smith_waterman" method="answerConstructing">
             <option name="EMULATED" value="true" />
@@ -617,8 +617,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/smith_waterman.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="9" column="47" selection-start-line="9" selection-start-column="47" selection-end-line="9" selection-end-column="47" />
+        <state relative-caret-position="-378">
+          <caret line="9" column="49" lean-forward="true" selection-start-line="4" selection-start-column="4" selection-end-line="9" selection-end-column="49" />
           <folding>
             <element signature="e#12301#12302#0" expanded="true" />
             <element signature="e#12330#12331#0" expanded="true" />

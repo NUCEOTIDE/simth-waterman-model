@@ -95,6 +95,11 @@ public class smith_waterman{
         }
         return true;
     }
+
+    /**
+     * go through every element in matrix, fill in the maximum number
+     * @param isGlobal
+     */
     private void scoring_calculation(boolean isGlobal){
         for(int i=1;i<scoring_dataSheet.length;i++){
             for(int j=1;j<scoring_dataSheet[0].length;j++){
