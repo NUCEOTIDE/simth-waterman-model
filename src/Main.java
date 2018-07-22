@@ -5,7 +5,7 @@ public class Main {
         Scanner s=new Scanner(System.in);
         //System.out.println("Please input S(a,b) as integers");
         //System.out.println("a=b:");
-        smith_waterman homework=new smith_waterman("homework");
+        smith_waterman homework=new smith_waterman();
         homework.scoring(false);
     }
 }
