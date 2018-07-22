@@ -1,15 +1,13 @@
-import java.util.*;
 import java.lang.*;
-import java.io.*;
 
 
 public class smith_waterman{
-    private String A,B;
-    private String[][] scoring_scheme;
-    private float penalty;
-    private float[][] scoring_dataSheet;
-    private String[] answer;
-    private int count=-1;
+    private String A,B;  /**two string to be aligned*/
+    private String[][] scoring_scheme;  /**scoring scheme*/
+    private float penalty;  /**empty space penalty*/
+    private float[][] scoring_dataSheet;  /**scoring matrix*/
+    private String[] answer;  /**answer string*/
+    private int count=-1;  /**records of length*/
 
     public smith_waterman(String types){
         switch (types){
