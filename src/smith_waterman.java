@@ -103,7 +103,7 @@ public class smith_waterman{
     private void scoring_calculation(boolean isGlobal){
         for(int i=1;i<scoring_dataSheet.length;i++){
             for(int j=1;j<scoring_dataSheet[0].length;j++){
-                scoring_dataSheet[i][j]=maximun(isGlobal,i,j);
+                scoring_dataSheet[i][j]=maximum(isGlobal,i,j);
             }
         }
     }
@@ -218,7 +218,7 @@ public class smith_waterman{
      * @param j
      * @return
      */
-    private float maximun(boolean isGlobal,int i,int j){
+    private float maximum(boolean isGlobal,int i,int j){
         float temp_score=0;
         try{
             if(isGlobal){
