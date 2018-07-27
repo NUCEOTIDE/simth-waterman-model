@@ -70,7 +70,8 @@ public class smith_waterman{
         }
 
         if(isGlobal)traceBack_global(scoring_dataSheet.length,scoring_dataSheet[0].length,"start point");
-        else traceBack_local(0,0,"start point");
+        //else traceBack_local(0,0,"start point");
+        else traceBack_local_initial(0,0);
         System.out.println(answer[0]);
         System.out.println(answer[1]);
     }
@@ -167,33 +168,16 @@ public class smith_waterman{
     private void traceBack_local(int i,int j,String traceBack_direction){
         try{
             count++;  /**counting every time to obtain the length of alignment*/
-            if(traceBack_direction.equals("start point")){  //initialize the recursion
-                float temp=0;
-                int maxPos_i=0,maxPos_j=0;
-                for(int k=1;k<scoring_dataSheet.length;k++)
-                    for(int m=1;m<scoring_dataSheet[0].length;m++)
-                        if(scoring_dataSheet[k][m]>scoring_dataSheet[maxPos_i][maxPos_j]){
-                            maxPos_i=k;
-                            maxPos_j=m;
-                        }
-                        System.out.println(maxPos_i+" "+maxPos_j);
-                temp=scoring_dataSheet[maxPos_i][maxPos_j];
-                /**local trace back initialization*/
-                if(scoring_dataSheet[maxPos_i-1][maxPos_j]==temp+matching(maxPos_i,maxPos_j,"downward"))
-                    traceBack_local(maxPos_i,maxPos_j,"upward");
-                if(scoring_dataSheet[maxPos_i][maxPos_j-1]==temp+matching(maxPos_i,maxPos_j,"rightward"))
-                    traceBack_local(maxPos_i,maxPos_j,"leftward");
-                if(scoring_dataSheet[maxPos_i-1][maxPos_j-1]==temp+matching(maxPos_i,maxPos_j,"diagonal"))
-                    traceBack_local(maxPos_i,maxPos_j,"reverse_diagonal");
-            }else if(scoring_dataSheet[i][j]!=0){  /**if the recursion is in progress*/
+            System.out.println("recursion in progress...");
+            if(scoring_dataSheet[i][j]!=0){  /**if the recursion is in progress*/
                 answerConstructing(i,j,traceBack_direction);  /**construct answer string*/
                 System.out.println("answer constructed"+i+" "+j);
                 if((i>=1||j>=1)&&(i<scoring_dataSheet.length&&j<scoring_dataSheet[0].length)){
-                    if(scoring_dataSheet[i-1][j]==scoring_dataSheet[i][j]+matching(i,j,"downward"))
+                    if(scoring_dataSheet[i-1][j]==(scoring_dataSheet[i][j]+matching(i,j,"downward")))
                         traceBack_local(i-1,j,"upward");
-                    if(scoring_dataSheet[i][j-1]==scoring_dataSheet[i][j]+matching(i,j,"rightward"))
+                    if(scoring_dataSheet[i][j-1]==(scoring_dataSheet[i][j]+matching(i,j,"rightward")))
                         traceBack_local(i,j-1,"leftward");
-                    if(scoring_dataSheet[i-1][j-1]==scoring_dataSheet[i][j]+matching(i,j,"diagonal"))
+                    if(scoring_dataSheet[i-1][j-1]==(scoring_dataSheet[i][j]+matching(i,j,"diagonal")))
                         traceBack_local(i-1,j-1,"reverse_diagonal");
                 }
             }else{
@@ -209,6 +193,35 @@ public class smith_waterman{
             count=-1;
             return;
         }
+    }
+
+
+    private void traceBack_local_initial(int i,int j){
+        try{
+            float temp=0;
+            int maxPos_i=0,maxPos_j=0;
+            for(int k=1;k<scoring_dataSheet.length;k++)
+                for(int m=1;m<scoring_dataSheet[0].length;m++)
+                    if(scoring_dataSheet[k][m]>scoring_dataSheet[maxPos_i][maxPos_j]){
+                        maxPos_i=k;
+                        maxPos_j=m;
+                    }
+            System.out.println(maxPos_i+" "+maxPos_j);
+            temp=scoring_dataSheet[maxPos_i][maxPos_j];
+            /**local trace back initialization*/
+            if(scoring_dataSheet[maxPos_i-1][maxPos_j]==temp+matching(maxPos_i,maxPos_j,"downward"))
+                traceBack_local(maxPos_i,maxPos_j,"upward");
+            if(scoring_dataSheet[maxPos_i][maxPos_j-1]==temp+matching(maxPos_i,maxPos_j,"rightward"))
+                traceBack_local(maxPos_i,maxPos_j,"leftward");
+            if(scoring_dataSheet[maxPos_i-1][maxPos_j-1]==temp+matching(maxPos_i,maxPos_j,"diagonal"))
+                traceBack_local(maxPos_i,maxPos_j,"reverse_diagonal");
+        }catch(Exception e){
+            if(e.getMessage().equals("cannot analyze direction"))
+                System.out.println("cannot trace back because of unknown direction during tracing");
+            if(i<=0||j<=0||i>=scoring_dataSheet.length||j>=scoring_dataSheet[0].length)
+                System.out.println("Index out of bond for unknown reason (At trace back-local)");
+        }
+
     }
 
     /**
@@ -254,23 +267,24 @@ public class smith_waterman{
      */
     private float matching(int i,int j,String direction)throws Exception{
         int a_pos=0,b_pos=0;
-        switch (direction){
-            case "diagonal":{
-                try{
-                    char a=A.charAt(i-1),b=B.charAt(j-1);
-                    for(int k=0;k<scoring_scheme.length;k++) if(a==scoring_scheme[k][0].charAt(0)) a_pos=k;
-                    for(int m=0;m<scoring_scheme[0].length;m++) if(b==scoring_scheme[0][m].charAt(0)) b_pos=m;
-                    if(a_pos==0||b_pos==0) throw new Exception("cannot find character");
-                }finally {
-                    return Integer.parseInt(scoring_scheme[a_pos][b_pos]);
+            switch (direction) {
+                case "diagonal": {
+                    try {
+                    char a = A.charAt(i - 1), b = B.charAt(j - 1);
+                    for (int k = 0; k < scoring_scheme.length; k++) if (a == scoring_scheme[k][0].charAt(0)) a_pos = k;
+                    for (int m = 0; m < scoring_scheme[0].length; m++)
+                        if (b == scoring_scheme[0][m].charAt(0)) b_pos = m;
+                    if (a_pos == 0 || b_pos == 0) throw new Exception("cannot find character");
+                    }finally {
+                        return Integer.parseInt(scoring_scheme[a_pos][b_pos]);
+                    }
+                }
+                case "rightward": return penalty;
+                case "downward": return penalty;
+                default: {
+                    throw new Exception("cannot analyze direction");
                 }
             }
-            case "rightward": return penalty;
-            case  "downward": return penalty;
-            default: {
-                throw new Exception("cannot analyze direction");
-            }
-        }
     }
 
     /**
